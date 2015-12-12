@@ -1,0 +1,17 @@
+[
+	{
+		"module": "musicplayer",
+		"name": "Glasba",
+		"config": {
+			"folders": ["/mnt", "test", "test1"]
+		}
+	},
+	{
+		"module": "musicplayer",
+		"name": "Test",
+		"config": {
+			"folders": ["/mnt"]
+		}
+	}
+
+]

@@ -1,0 +1,23 @@
+{{ $current := .Module.Data.CurrentPlaylist }}
+<form class="js-playlist-form">
+	<input type="hidden" name="url" value="{{ .UrlPrefix }}">
+	<div class="form-group">
+		<a class="btn btn-primary js-play{{ if .Module.Data.Playing }} hidden{{ end }}" href="#" role="button" title="Predvajaj">
+			<span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+		</a>
+		<a class="btn btn-primary js-stop{{ if not .Module.Data.Playing }} hidden{{ end }}" href="#" role="button" title="Stop">
+			<span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+		</a>
+		<a class="btn btn-default js-next{{ if not .Module.Data.Playing }} hidden{{ end }}" href="#" role="button" title="Naslednja pesem">
+			<span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
+		</a>
+	</div>
+	<div class="form-group">
+		<label for="playlistSelect">Seznam predvajanja:</label>
+		<select class="form-control" name="playlist">
+			{{ range $index, $playlist := .Module.Data.Playlists }}
+				<option value="{{ $index }}"{{ if eq $index $current }} selected{{ end }}>{{ $playlist }}</option>
+			{{ end }}
+		</select>
+	</div>
+</form>
