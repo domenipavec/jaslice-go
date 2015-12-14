@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"io"
 
 	"golang.org/x/net/websocket"
 
@@ -19,8 +20,10 @@ type MusicPlayer struct {
 	playStop chan bool
 	next     chan bool
 	playing  bool
+
 	wait     chan bool
 	cmd      *exec.Cmd
+	stdin io.WriteCloser
 
 	playlists     []string
 	playlistSongs [][]string
@@ -87,18 +90,27 @@ func (mp *MusicPlayer) control() {
 		case <-mp.next:
 			if mp.playing {
 				mp.stopPlaying()
-				mp.playSong()
 			}
 		}
 	}
 }
 
 func (mp *MusicPlayer) playSong() {
-	mp.setCurrentSong(mp.getSong())
+	song := mp.getSong()
+	mp.setCurrentSong(song)
 
-	mp.cmd = exec.Command("omxplayer", "-o", "local", mp.currentSong)
-	if err := mp.cmd.Start(); err != nil {
+	mp.cmd = exec.Command("omxplayer", "-o", "local", song)
+
+	var err error
+	mp.stdin, err = mp.cmd.StdinPipe()
+	if err != nil {
 		log.Print(err)
+	}
+
+	err = mp.cmd.Start()
+	if err != nil {
+		log.Print(err)
+		return
 	}
 
 	go mp.waitForPlayer()
@@ -107,16 +119,12 @@ func (mp *MusicPlayer) playSong() {
 func (mp *MusicPlayer) stopPlaying() {
 	mp.setCurrentSong("")
 
-	if mp.cmd != nil && mp.cmd.Process != nil {
-		if err := mp.cmd.Process.Kill(); err != nil {
-			log.Print(err)
-		}
-		mp.cmd = nil
-	}
+	mp.stdin.Write([]byte{'q'})
+	mp.stdin.Close()
 }
 
 func (mp *MusicPlayer) setCurrentSong(song string) {
-	mp.currentSong = song
+	_, mp.currentSong = filepath.Split(song)
 
 	for _, webSocket := range mp.songWebsockets {
 		webSocket.Write([]byte(mp.currentSong))
