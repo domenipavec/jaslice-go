@@ -3,7 +3,10 @@
 		"module": "musicplayer",
 		"name": "Glasba",
 		"config": {
-			"folders": ["/home/domen/music"]
+			"folders": [
+				"/home/domen/bozicna/youtube-playlist",
+				"/home/domen/bozicna/100-hits-christmas-legends"
+			]
 		}
 	}
 ]
