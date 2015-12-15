@@ -1,6 +1,7 @@
 package musicplayer
 
 import (
+	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -9,7 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"io"
 
 	"golang.org/x/net/websocket"
 
@@ -21,8 +21,8 @@ type MusicPlayer struct {
 	next     chan bool
 	playing  bool
 
-	wait     chan bool
-	cmd      *exec.Cmd
+	wait  chan bool
+	cmd   *exec.Cmd
 	stdin io.WriteCloser
 
 	playlists     []string
