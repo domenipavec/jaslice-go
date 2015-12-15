@@ -20,6 +20,7 @@ type ModuleConstructor func(map[string]interface{}) Module
 
 type ModuleData struct {
 	Name      string
+	ModuleId  string
 	Template  string
 	UrlPrefix string
 	Module    Module
@@ -108,6 +109,7 @@ func (app *App) InitModule(moduleConfig ModuleConfig) {
 
 	app.Modules = append(app.Modules, ModuleData{
 		Name:      moduleConfig.Name,
+		ModuleId:  moduleConfig.Module,
 		Template:  app.templateName(moduleConfig.Module),
 		UrlPrefix: urlPrefix,
 		Module:    module,

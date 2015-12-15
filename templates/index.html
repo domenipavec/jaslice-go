@@ -23,7 +23,10 @@
 						<div class="panel panel-default">
 							<div class="panel-heading">{{ .Name }}</div>
 							<div class="panel-body">
-								{{ ModuleTemplate .Template . }}
+								<form class="js-module js-{{ .ModuleId }}">
+									<input type="hidden" name="url" value="{{ .UrlPrefix }}">
+									{{ ModuleTemplate .Template .Module.Data }}
+								</form>
 							</div>
 						</div>
 					</div>
