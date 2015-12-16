@@ -56,7 +56,7 @@ func New() *App {
 	})
 
 	if _, err := app.Template.ParseFiles(app.templateFile("index")); err != nil {
-		log.Fatal(err)
+		log.Fatalln("Error parsing index:", err)
 	}
 
 	return app
@@ -74,7 +74,7 @@ func (app *App) AddModule(name string, mc ModuleConstructor) {
 	app.ModuleConstructors[name] = mc
 
 	if _, err := app.Template.ParseFiles(app.templateFile(name)); err != nil {
-		log.Fatal(err)
+		log.Fatalln("Error parsing template", name, ":", err)
 	}
 
 	log.Println("Added module:", name)
@@ -83,7 +83,7 @@ func (app *App) AddModule(name string, mc ModuleConstructor) {
 func (app *App) Initialize(configFn string) {
 	configFile, err := os.Open(configFn)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln("Error opening config:", err)
 	}
 	defer configFile.Close()
 
@@ -91,7 +91,7 @@ func (app *App) Initialize(configFn string) {
 
 	jsonParser := json.NewDecoder(configFile)
 	if err := jsonParser.Decode(&config); err != nil {
-		log.Fatal(err)
+		log.Fatalln("Error decoding config:", err)
 	}
 
 	for _, moduleConfig := range config {
@@ -124,13 +124,13 @@ func (app *App) Start() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", app)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatalln("Error serve:", http.ListenAndServe(":8080", nil))
 }
 
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := app.Template.ExecuteTemplate(w, "index.html", app.Modules)
 	if err != nil {
-		log.Println(err)
+		log.Println("Error executing template:", err)
 		w.WriteHeader(500)
 	}
 }

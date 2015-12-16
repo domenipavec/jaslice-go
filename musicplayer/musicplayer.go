@@ -1,7 +1,6 @@
 package musicplayer
 
 import (
-	"io"
 	"log"
 	"math/rand"
 	"net/http"
@@ -21,9 +20,8 @@ type MusicPlayer struct {
 	next     chan bool
 	playing  bool
 
-	wait  chan bool
-	cmd   *exec.Cmd
-	stdin io.WriteCloser
+	wait chan bool
+	cmd  *exec.Cmd
 
 	playlists     []string
 	playlistSongs [][]string
@@ -45,18 +43,18 @@ func New(config map[string]interface{}) application.Module {
 
 	folders, success := config["folders"].([]interface{})
 	if !success {
-		log.Fatal("Folders must be a list")
+		log.Fatalln("Folders must be a list")
 	}
 
 	for _, folder := range folders {
 		playlist, success := folder.(string)
 		if !success {
-			log.Fatal("Folder must be a string")
+			log.Fatalln("Folder must be a string")
 		}
 
 		songs, err := filepath.Glob(filepath.Join(playlist, "*.mp3"))
 		if err != nil {
-			log.Fatal(err)
+			log.Fatalln("Error globbing:", err)
 		}
 
 		log.Println("Found", len(songs), "songs in", playlist, "playlist.")
@@ -99,17 +97,10 @@ func (mp *MusicPlayer) playSong() {
 	song := mp.getSong()
 	mp.setCurrentSong(song)
 
-	mp.cmd = exec.Command("omxplayer", "-o", "local", song)
+	mp.cmd = exec.Command("mpg321", song)
 
-	var err error
-	mp.stdin, err = mp.cmd.StdinPipe()
-	if err != nil {
-		log.Print(err)
-	}
-
-	err = mp.cmd.Start()
-	if err != nil {
-		log.Print(err)
+	if err := mp.cmd.Start(); err != nil {
+		log.Println("Error starting:", err)
 		return
 	}
 
@@ -119,8 +110,10 @@ func (mp *MusicPlayer) playSong() {
 func (mp *MusicPlayer) stopPlaying() {
 	mp.setCurrentSong("")
 
-	mp.stdin.Write([]byte{'q'})
-	mp.stdin.Close()
+	if err := mp.cmd.Process.Kill(); err != nil {
+		log.Println("Error killing:", err)
+		return
+	}
 }
 
 func (mp *MusicPlayer) setCurrentSong(song string) {
@@ -132,9 +125,7 @@ func (mp *MusicPlayer) setCurrentSong(song string) {
 }
 
 func (mp *MusicPlayer) waitForPlayer() {
-	if err := mp.cmd.Wait(); err != nil {
-		log.Print(err)
-	}
+	mp.cmd.Wait()
 	mp.wait <- true
 }
 
