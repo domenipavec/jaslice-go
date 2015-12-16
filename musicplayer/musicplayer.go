@@ -23,9 +23,10 @@ type MusicPlayer struct {
 	wait chan bool
 	cmd  *exec.Cmd
 
-	playlists     []string
-	playlistSongs [][]string
-	playlistIndex int
+	playlists        []string
+	playlistSongs    [][]string
+	playlistIndex    int
+	playlistShuffles [][]int
 
 	currentSong    string
 	songHandler    websocket.Handler
@@ -61,6 +62,7 @@ func New(config map[string]interface{}) application.Module {
 
 		mp.playlists = append(mp.playlists, playlist)
 		mp.playlistSongs = append(mp.playlistSongs, songs)
+		mp.playlistShuffles = append(mp.playlistShuffles, nil)
 	}
 
 	mp.songHandler = websocket.Handler(mp.SongWebsocket)
@@ -130,7 +132,13 @@ func (mp *MusicPlayer) waitForPlayer() {
 }
 
 func (mp *MusicPlayer) getSong() string {
-	songIndex := rand.Intn(len(mp.playlistSongs[mp.playlistIndex]))
+	if len(mp.playlistShuffles[mp.playlistIndex]) == 0 {
+		mp.playlistShuffles[mp.playlistIndex] = rand.Perm(len(mp.playlistSongs[mp.playlistIndex]))
+	}
+
+	songIndex := mp.playlistShuffles[mp.playlistIndex][0]
+	mp.playlistShuffles[mp.playlistIndex] = mp.playlistShuffles[mp.playlistIndex][1:]
+
 	return mp.playlistSongs[mp.playlistIndex][songIndex]
 }
 
