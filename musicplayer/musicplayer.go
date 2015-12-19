@@ -143,9 +143,9 @@ func (mp *MusicPlayer) getSong() string {
 func (mp *MusicPlayer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	command := r.URL.Path
 
-	if command == "play" {
+	if command == "on" {
 		mp.playStop <- true
-	} else if command == "stop" {
+	} else if command == "off" {
 		mp.playStop <- false
 	} else if command == "next" {
 		mp.next <- true
