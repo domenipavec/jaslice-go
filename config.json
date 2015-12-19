@@ -50,5 +50,13 @@
 			"index": 0,
 			"value": 128
 		}
+	},
+	{
+		"module": "relay",
+		"name": "Voda",
+		"config": {
+			"index": 0,
+			"on": false
+		}
 	}
 ]

@@ -33,6 +33,16 @@ var fireShowHide = function (self, on) {
 	}
 };
 
+var relayShowHide = function (self, on) {
+	if (on) {
+		$(self).find('.js-relay-off').show();
+		$(self).find('.js-relay-on').hide();
+	} else {
+		$(self).find('.js-relay-off').hide();
+		$(self).find('.js-relay-on').show();
+	}
+};
+
 $(function () {
 	$('.slider').slider();
 
@@ -123,6 +133,18 @@ $(function () {
 			$(self).find('input[name=value]').on('slideStop', function () {
 				var value = $(this).val();
 				$.get(url + '/' + value);
+			});
+		} else if ($(self).hasClass('js-relay')) {
+			relayShowHide(self, $(self).find('input[name=on]').val() === 'true');
+
+			$(self).find('.js-relay-on').click(function () {
+				$.get(url + 'on');
+				relayShowHide(self, true);
+			});
+
+			$(self).find('.js-relay-off').click(function () {
+				$.get(url + 'off');
+				relayShowHide(self, false);
 			});
 		}
 	});
