@@ -8,5 +8,35 @@
 				"/home/domen/bozicna/100-hits-christmas-legends"
 			]
 		}
+	},
+	{
+		"module": "fire",
+		"name": "Ogenj 1",
+		"config": {
+			"address": 98,
+			"speed": 128,
+			"color": 128,
+			"light": 255
+		}
+	},
+	{
+		"module": "fire",
+		"name": "Ogenj 2",
+		"config": {
+			"address": 97,
+			"speed": 128,
+			"color": 128,
+			"light": 255
+		}
+	},
+	{
+		"module": "fire",
+		"name": "Ogenj 3",
+		"config": {
+			"address": 96,
+			"speed": 128,
+			"color": 128,
+			"light": 255
+		}
 	}
 ]

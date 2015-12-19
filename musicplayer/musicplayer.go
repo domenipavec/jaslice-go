@@ -33,7 +33,7 @@ type MusicPlayer struct {
 	songWebsockets []*websocket.Conn
 }
 
-func New(config map[string]interface{}) application.Module {
+func New(app *application.App, config map[string]interface{}) application.Module {
 	rand.Seed(time.Now().UnixNano())
 
 	mp := &MusicPlayer{
@@ -44,13 +44,13 @@ func New(config map[string]interface{}) application.Module {
 
 	folders, success := config["folders"].([]interface{})
 	if !success {
-		log.Fatalln("Folders must be a list")
+		log.Fatalln("Folders must be a list:", config)
 	}
 
 	for _, folder := range folders {
 		playlist, success := folder.(string)
 		if !success {
-			log.Fatalln("Folder must be a string")
+			log.Fatalln("Folder must be a string:", config)
 		}
 
 		songs, err := filepath.Glob(filepath.Join(playlist, "*.mp3"))
@@ -140,10 +140,6 @@ func (mp *MusicPlayer) getSong() string {
 	mp.playlistShuffles[mp.playlistIndex] = mp.playlistShuffles[mp.playlistIndex][1:]
 
 	return mp.playlistSongs[mp.playlistIndex][songIndex]
-}
-
-type status struct {
-	Playing bool `json:"playing"`
 }
 
 func (mp *MusicPlayer) ServeHTTP(w http.ResponseWriter, r *http.Request) {

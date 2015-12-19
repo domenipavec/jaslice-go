@@ -23,12 +23,26 @@ var modulesShowHide = function (on) {
 	}
 };
 
+var fireShowHide = function (self, on) {
+	if (on) {
+		$(self).find('.js-fire-show').show();
+		$(self).find('.js-fire-on').hide();
+	} else {
+		$(self).find('.js-fire-show').hide();
+		$(self).find('.js-fire-on').show();
+	}
+};
+
 $(function () {
 	modulesShowHide($('input[name=on]').val() === 'true');
 
 	$('.js-on').click(function () {
 		$.get('/api/on');
-		modulesShowHide(true);
+
+		// everything gets reset on turn on, so this is the easiest solution
+		setTimeout(function () {
+			location.reload();
+		}, 200);
 	});
 
 	$('.js-off').click(function () {
@@ -40,7 +54,7 @@ $(function () {
 		var url = $(this).find('input[name=url]').val();
 		var self = this;
 
-		if ($(this).hasClass('js-musicplayer')) {
+		if ($(self).hasClass('js-musicplayer')) {
 			musicplayerShowHide(self, $(self).find('input[name=playing]').val() === 'true');
 
 			var socket = new WebSocket('ws://' + location.host + url + 'song');
@@ -65,6 +79,40 @@ $(function () {
 
 			$(self).find('.js-musicplayer-next').click(function () {
 				$.get(url + 'next');
+			});
+		} else if ($(self).hasClass('js-fire')) {
+			fireShowHide(self, $(self).find('input[name=on]').val() === 'true');
+
+			$(self).find('.js-fire-field').each(function () {
+				var field = this;
+				$(field).find('input[type=range]').change(function () {
+					$(field).find('.js-fire-value').text($(this).val());
+				});
+			});
+
+			$(self).find('.js-fire-on').click(function () {
+				$.get(url + 'on');
+				fireShowHide(self, true);
+			});
+
+			$(self).find('.js-fire-off').click(function () {
+				$.get(url + 'off');
+				fireShowHide(self, false);
+			});
+
+			$(self).find('input[name=color]').change(function () {
+				var value = $(this).val();
+				$.get(url + 'color/' + value);
+			});
+
+			$(self).find('input[name=light]').change(function () {
+				var value = $(this).val();
+				$.get(url + 'light/' + value);
+			});
+
+			$(self).find('input[name=speed]').change(function () {
+				var value = $(this).val();
+				$.get(url + 'speed/' + value);
 			});
 		}
 	});

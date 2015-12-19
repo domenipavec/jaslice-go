@@ -7,6 +7,7 @@ import (
 	"github.com/Zemanta/gracefulshutdown/shutdownmanagers/posixsignal"
 
 	"github.com/matematik7/jaslice-go/application"
+	"github.com/matematik7/jaslice-go/fire"
 	"github.com/matematik7/jaslice-go/musicplayer"
 )
 
@@ -20,6 +21,7 @@ func main() {
 	app := application.New()
 
 	app.AddModule("musicplayer", musicplayer.New)
+	app.AddModule("fire", fire.New)
 
 	app.Initialize("config.json")
 
