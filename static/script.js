@@ -125,6 +125,12 @@ $(function () {
 				$(self).find('.js-nebo-speed').text(value);
 				$.get(url + 'speed/' + value);
 			});
+		} else if ($(self).hasClass('js-pwm')) {
+			$(self).find('input[name=value]').change(function () {
+				var value = $(this).val();
+				$(self).find('.js-pwm-value').text(value);
+				$.get(url + '/' + value);
+			});
 		}
 	});
 });

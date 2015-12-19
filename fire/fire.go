@@ -34,7 +34,6 @@ func New(app *application.App, config map[string]interface{}) application.Module
 		log.Fatalln("Unable to parse config address:", config)
 	}
 	fire.address = byte(address)
-	log.Println("Fire at", fire.address)
 
 	speed, success := config["speed"].(float64)
 	if !success {

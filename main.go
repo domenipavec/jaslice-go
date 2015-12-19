@@ -10,6 +10,7 @@ import (
 	"github.com/matematik7/jaslice-go/fire"
 	"github.com/matematik7/jaslice-go/musicplayer"
 	"github.com/matematik7/jaslice-go/nebo"
+	"github.com/matematik7/jaslice-go/pwm"
 )
 
 func main() {
@@ -24,6 +25,7 @@ func main() {
 	app.AddModule("musicplayer", musicplayer.New)
 	app.AddModule("fire", fire.New)
 	app.AddModule("nebo", nebo.New)
+	app.AddModule("pwm", pwm.New)
 
 	app.Initialize("config.json")
 

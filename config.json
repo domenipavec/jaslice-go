@@ -42,5 +42,13 @@
 	{
 		"module": "nebo",
 		"name": "Nebo"
+	},
+	{
+		"module": "pwm",
+		"name": "Luč v hlevčku",
+		"config": {
+			"index": 0,
+			"value": 128
+		}
 	}
 ]
