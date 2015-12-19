@@ -30,6 +30,12 @@ $(function () {
 		}
 	};
 
+	var pathJoin = function (parts, sep) {
+		var separator = sep || '/';
+		var replace = new RegExp(separator + '{1,}', 'g');
+		return parts.join(separator).replace(replace, separator);
+	};
+
 	modulesShowHide($('input[name=on]').val() === 'true');
 
 	$('.js-on').click(function () {
@@ -50,69 +56,43 @@ $(function () {
 		var url = $(this).find('input[name=url]').val();
 		var self = this;
 
+		// on-off button
 		if ($(self).find('input[name=on]').length) {
 			generalShowHide(self, $(self).find('input[name=on]').val() === 'true');
 
 			$(self).find('.js-module-on').click(function () {
-				$.get(url + 'on');
+				$.get(pathJoin([url, 'on']));
 				generalShowHide(self, true);
 			});
 
 			$(self).find('.js-module-off').click(function () {
-				$.get(url + 'off');
+				$.get(pathJoin([url, 'off']));
 				generalShowHide(self, false);
 			});
 		}
 
+		// slider
+		$(self).find('.js-slider').on('slideStop', function () {
+			$.get(pathJoin([url, this.name, this.value]));
+		});
+
+		// button
+		$(self).find('.js-button').click(function () {
+			$.get(pathJoin([url, $(this).data('path')]));
+		});
+
+		// select list
+		$(self).find('.js-select').change(function () {
+			$.get(pathJoin([url, this.name, this.value]));
+		});
+
+		// module specific
 		if ($(self).hasClass('js-musicplayer')) {
 			var socket = new WebSocket('ws://' + location.host + url + 'song');
 			socket.onmessage = function (event) {
 				$(self).find('.js-musicplayer-song').text(event.data);
 			};
-
-			$(self).find('select[name=playlist]').change(function () {
-				var value = $(this).val();
-				$.get(url + 'playlist/' + value);
-			});
-
-			$(self).find('.js-musicplayer-next').click(function () {
-				$.get(url + 'next');
-			});
-		} else if ($(self).hasClass('js-fire')) {
-			$(self).find('input[name=color]').on('slideStop', function () {
-				var value = $(this).val();
-				$.get(url + 'color/' + value);
-			});
-
-			$(self).find('input[name=light]').on('slideStop', function () {
-				var value = $(this).val();
-				$.get(url + 'light/' + value);
-			});
-
-			$(self).find('input[name=speed]').on('slideStop', function () {
-				var value = $(this).val();
-				$.get(url + 'speed/' + value);
-			});
-		} else if ($(self).hasClass('js-nebo')) {
-			$(self).find('select[name=mode]').change(function () {
-				var value = $(this).val();
-				$.get(url + 'mode/' + value);
-			});
-
-			$(self).find('input[name=speed]').on('slideStop', function () {
-				var value = $(this).val();
-				$.get(url + 'speed/' + value);
-			});
-		} else if ($(self).hasClass('js-pwm')) {
-			$(self).find('input[name=value]').on('slideStop', function () {
-				var value = $(this).val();
-				$.get(url + '/' + value);
-			});
 		} else if ($(self).hasClass('js-utrinek')) {
-			$(self).find('.js-utrinek-show').click(function () {
-				$.get(url + 'show');
-			});
-
 			var oldVal = $(self).find('input[name=interval]').val().split(',');
 			$(self).find('input[name=interval]').on('slideStop', function () {
 				var newVal = $(this).val().split(',');

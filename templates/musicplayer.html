@@ -7,7 +7,7 @@
 	<a class="btn btn-primary js-module-off" href="#" role="button" title="Stop">
 		<span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
 	</a>
-	<a class="btn btn-default js-musicplayer-next js-module-show-on" href="#" role="button" title="Naslednja pesem">
+	<a class="btn btn-default js-button js-module-show-on" href="#" role="button" title="Naslednja pesem" data-path="next">
 		<span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
 	</a>
 </div>
@@ -17,7 +17,7 @@
 </div>
 <div class="form-group">
 	<label for="playlistSelect">Seznam predvajanja:</label>
-	<select class="form-control" name="playlist">
+	<select class="form-control js-select" name="playlist">
 		{{ range $index, $playlist := .Playlists }}
 			<option value="{{ $index }}"{{ if eq $index $current }} selected{{ end }}>{{ $playlist }}</option>
 		{{ end }}
