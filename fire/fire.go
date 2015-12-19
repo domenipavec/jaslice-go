@@ -31,25 +31,25 @@ func New(app *application.App, config map[string]interface{}) application.Module
 
 	address, success := config["address"].(float64)
 	if !success {
-		log.Fatalln("Unable to parse config address:", config)
+		log.Fatalln("Unable to parse fire address:", config)
 	}
 	fire.address = byte(address)
 
 	speed, success := config["speed"].(float64)
 	if !success {
-		log.Fatalln("Unable to parse config address:", config)
+		log.Fatalln("Unable to parse fire speed:", config)
 	}
 	fire.speed = byte(speed)
 
 	color, success := config["color"].(float64)
 	if !success {
-		log.Fatalln("Unable to parse config address:", config)
+		log.Fatalln("Unable to parse fire color:", config)
 	}
 	fire.color = byte(color)
 
 	light, success := config["light"].(float64)
 	if !success {
-		log.Fatalln("Unable to parse config address:", config)
+		log.Fatalln("Unable to parse fire light:", config)
 	}
 	fire.light = byte(light)
 

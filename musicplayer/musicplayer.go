@@ -34,8 +34,6 @@ type MusicPlayer struct {
 }
 
 func New(app *application.App, config map[string]interface{}) application.Module {
-	rand.Seed(time.Now().UnixNano())
-
 	mp := &MusicPlayer{
 		playStop: make(chan bool),
 		wait:     make(chan bool),

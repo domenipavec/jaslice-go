@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"math/rand"
+	"time"
 
 	"github.com/Zemanta/gracefulshutdown"
 	"github.com/Zemanta/gracefulshutdown/shutdownmanagers/posixsignal"
@@ -12,9 +14,12 @@ import (
 	"github.com/matematik7/jaslice-go/nebo"
 	"github.com/matematik7/jaslice-go/pwm"
 	"github.com/matematik7/jaslice-go/relay"
+	"github.com/matematik7/jaslice-go/utrinek"
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
+
 	gs := gracefulshutdown.New()
 	gs.AddShutdownManager(posixsignal.NewPosixSignalManager())
 	gs.SetErrorHandler(gracefulshutdown.ErrorFunc(func(err error) {
@@ -28,6 +33,7 @@ func main() {
 	app.AddModule("nebo", nebo.New)
 	app.AddModule("pwm", pwm.New)
 	app.AddModule("relay", relay.New)
+	app.AddModule("utrinek", utrinek.New)
 
 	app.Initialize("config.json")
 

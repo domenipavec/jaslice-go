@@ -43,6 +43,16 @@ var relayShowHide = function (self, on) {
 	}
 };
 
+var utrinekShowHide = function (self, on) {
+	if (on) {
+		$(self).find('.js-utrinek-show').show();
+		$(self).find('.js-utrinek-on').hide();
+	} else {
+		$(self).find('.js-utrinek-show').hide();
+		$(self).find('.js-utrinek-on').show();
+	}
+};
+
 $(function () {
 	$('.slider').slider();
 
@@ -145,6 +155,34 @@ $(function () {
 			$(self).find('.js-relay-off').click(function () {
 				$.get(url + 'off');
 				relayShowHide(self, false);
+			});
+		} else if ($(self).hasClass('js-utrinek')) {
+			utrinekShowHide(self, $(self).find('input[name=on]').val() === 'true');
+
+			$(self).find('.js-utrinek-on').click(function () {
+				$.get(url + 'on');
+				utrinekShowHide(self, true);
+			});
+
+			$(self).find('.js-utrinek-off').click(function () {
+				$.get(url + 'off');
+				utrinekShowHide(self, false);
+			});
+
+			$(self).find('.js-utrinek-go').click(function () {
+				$.get(url + 'show');
+			});
+
+			var oldVal = $(self).find('input[name=interval]').val().split(',');
+			$(self).find('input[name=interval]').on('slideStop', function () {
+				var newVal = $(this).val().split(',');
+				if (newVal[0] !== oldVal[0]) {
+					$.get(url + 'min/' + newVal[0]);
+				}
+				if (newVal[1] !== oldVal[1]) {
+					$.get(url + 'max/' + newVal[1]);
+				}
+				oldVal = newVal;
 			});
 		}
 	});

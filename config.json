@@ -58,5 +58,23 @@
 			"index": 0,
 			"on": false
 		}
+	},
+	{
+		"module": "utrinek",
+		"name": "Utrinek 1",
+		"config": {
+			"address": 64,
+			"min": 3,
+			"max": 15
+		}
+	},
+	{
+		"module": "utrinek",
+		"name": "Utrinek 2",
+		"config": {
+			"address": 65,
+			"min": 3,
+			"max": 15
+		}
 	}
 ]
