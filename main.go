@@ -9,6 +9,7 @@ import (
 	"github.com/matematik7/jaslice-go/application"
 	"github.com/matematik7/jaslice-go/fire"
 	"github.com/matematik7/jaslice-go/musicplayer"
+	"github.com/matematik7/jaslice-go/nebo"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
 
 	app.AddModule("musicplayer", musicplayer.New)
 	app.AddModule("fire", fire.New)
+	app.AddModule("nebo", nebo.New)
 
 	app.Initialize("config.json")
 

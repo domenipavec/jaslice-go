@@ -38,5 +38,9 @@
 			"color": 128,
 			"light": 255
 		}
+	},
+	{
+		"module": "nebo",
+		"name": "Nebo"
 	}
 ]

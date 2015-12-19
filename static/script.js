@@ -42,7 +42,7 @@ $(function () {
 		// everything gets reset on turn on, so this is the easiest solution
 		setTimeout(function () {
 			location.reload();
-		}, 200);
+		}, 500);
 	});
 
 	$('.js-off').click(function () {
@@ -112,6 +112,17 @@ $(function () {
 
 			$(self).find('input[name=speed]').change(function () {
 				var value = $(this).val();
+				$.get(url + 'speed/' + value);
+			});
+		} else if ($(self).hasClass('js-nebo')) {
+			$(self).find('select[name=mode]').change(function () {
+				var value = $(this).val();
+				$.get(url + 'mode/' + value);
+			});
+
+			$(self).find('input[name=speed]').change(function () {
+				var value = $(this).val();
+				$(self).find('.js-nebo-speed').text(value);
 				$.get(url + 'speed/' + value);
 			});
 		}
