@@ -8,12 +8,17 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/kidoman/embd"
+	_ "github.com/kidoman/embd/host/rpi"
 )
 
 type Module interface {
 	http.Handler
 
 	Data() interface{}
+	On()
+	Off()
 }
 
 type ModuleConstructor func(map[string]interface{}) Module
@@ -23,7 +28,8 @@ type ModuleData struct {
 	ModuleId  string
 	Template  string
 	UrlPrefix string
-	Module    Module
+
+	Module Module
 }
 
 type ModuleConfig struct {
@@ -33,30 +39,50 @@ type ModuleConfig struct {
 }
 
 type App struct {
-	Template           *template.Template
-	ModuleCounts       map[string]int
+	template *template.Template
+
 	Modules            []ModuleData
-	ModuleConstructors map[string]ModuleConstructor
+	moduleConstructors map[string]ModuleConstructor
+	moduleCounts       map[string]int
+
+	On       bool
+	powerPin embd.DigitalPin
 }
 
 func New() *App {
-	app := &App{
-		ModuleCounts:       make(map[string]int),
-		ModuleConstructors: make(map[string]ModuleConstructor),
-		Template:           template.New("index.html"),
+	var err error
+
+	if err := embd.InitGPIO(); err != nil {
+		log.Fatalln("Error init gpio:", err)
 	}
 
-	app.Template.Funcs(map[string]interface{}{
+	app := &App{
+		moduleCounts:       make(map[string]int),
+		moduleConstructors: make(map[string]ModuleConstructor),
+		template:           template.New("index.html"),
+	}
+
+	app.template.Funcs(map[string]interface{}{
 		"ModuleTemplate": func(name string, data interface{}) (ret template.HTML, err error) {
 			buf := bytes.NewBuffer([]byte{})
-			err = app.Template.ExecuteTemplate(buf, name, data)
+			err = app.template.ExecuteTemplate(buf, name, data)
 			ret = template.HTML(buf.String())
 			return
 		},
 	})
 
-	if _, err := app.Template.ParseFiles(app.templateFile("index")); err != nil {
+	if _, err = app.template.ParseFiles(app.templateFile("index")); err != nil {
 		log.Fatalln("Error parsing index:", err)
+	}
+
+	app.powerPin, err = embd.NewDigitalPin("P1_12")
+	if err != nil {
+		log.Fatalln("Error creating power pin:", err)
+	}
+
+	err = app.powerPin.SetDirection(embd.Out)
+	if err != nil {
+		log.Fatalln("Error set direction for power pin:", err)
 	}
 
 	return app
@@ -71,9 +97,9 @@ func (app *App) templateFile(name string) string {
 }
 
 func (app *App) AddModule(name string, mc ModuleConstructor) {
-	app.ModuleConstructors[name] = mc
+	app.moduleConstructors[name] = mc
 
-	if _, err := app.Template.ParseFiles(app.templateFile(name)); err != nil {
+	if _, err := app.template.ParseFiles(app.templateFile(name)); err != nil {
 		log.Fatalln("Error parsing template", name, ":", err)
 	}
 
@@ -100,10 +126,10 @@ func (app *App) Initialize(configFn string) {
 }
 
 func (app *App) InitModule(moduleConfig ModuleConfig) {
-	module := app.ModuleConstructors[moduleConfig.Module](moduleConfig.Config)
+	module := app.moduleConstructors[moduleConfig.Module](moduleConfig.Config)
 
-	app.ModuleCounts[moduleConfig.Module] += 1
-	instanceNumber := strconv.Itoa(app.ModuleCounts[moduleConfig.Module])
+	app.moduleCounts[moduleConfig.Module] += 1
+	instanceNumber := strconv.Itoa(app.moduleCounts[moduleConfig.Module])
 
 	urlPrefix := "/api/" + moduleConfig.Module + instanceNumber + "/"
 
@@ -127,10 +153,40 @@ func (app *App) Start() {
 	log.Fatalln("Error serve:", http.ListenAndServe(":8080", nil))
 }
 
+func (app *App) OnShutdown(string) error {
+	return embd.CloseGPIO()
+}
+
 func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	err := app.Template.ExecuteTemplate(w, "index.html", app.Modules)
-	if err != nil {
-		log.Println("Error executing template:", err)
-		w.WriteHeader(500)
+	if r.URL.Path == "/" {
+		err := app.template.ExecuteTemplate(w, "index.html", app)
+		if err != nil {
+			log.Println("Error executing template:", err)
+			w.WriteHeader(500)
+		}
+	} else if r.URL.Path == "/api/on" {
+		app.On = true
+
+		if err := app.powerPin.Write(embd.High); err != nil {
+			log.Println("Error writing power pin:", err)
+			w.WriteHeader(500)
+		}
+
+		for _, module := range app.Modules {
+			module.Module.On()
+		}
+	} else if r.URL.Path == "/api/off" {
+		app.On = false
+
+		for _, module := range app.Modules {
+			module.Module.Off()
+		}
+
+		if err := app.powerPin.Write(embd.Low); err != nil {
+			log.Println("Error writing power pin:", err)
+			w.WriteHeader(500)
+		}
+	} else {
+		w.WriteHeader(404)
 	}
 }

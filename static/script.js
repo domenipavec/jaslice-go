@@ -10,7 +10,32 @@ var musicplayerShowHide = function (self, playing) {
 	}
 };
 
+var modulesShowHide = function (on) {
+	if (on) {
+		$('.js-module').show();
+		$('.js-on').hide();
+		$('.js-off').show();
+	} else {
+		$('.js-module').hide();
+		$('.js-musicplayer').show();
+		$('.js-on').show();
+		$('.js-off').hide();
+	}
+};
+
 $(function () {
+	modulesShowHide($('input[name=on]').val() === 'true');
+
+	$('.js-on').click(function () {
+		$.get('/api/on');
+		modulesShowHide(true);
+	});
+
+	$('.js-off').click(function () {
+		$.get('/api/off');
+		modulesShowHide(false);
+	});
+
 	$('.js-module').each(function () {
 		var url = $(this).find('input[name=url]').val();
 		var self = this;

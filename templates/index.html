@@ -16,17 +16,27 @@
 
 		<div class="container">
 			<h1>Jaslice</h1>
-			
+
+			<p>
+				<input type="hidden" name="on" value="{{ .On }}">
+
+				<a class="btn btn-success js-on" href="#" role="button" title="Prižgi">
+					<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+				</a>
+
+				<a class="btn btn-danger js-off" href="#" role="button" title="Ugasni">
+					<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+				</a>
+			</p>
+
 			<div class="row">
-				{{ range . }}
-					<div class="col-xs-12 col-md-6 col-lg-4">
+				{{ range .Modules }}
+					<div class="col-xs-12 col-md-6 col-lg-4 js-module js-{{ .ModuleId }}">
 						<div class="panel panel-default">
 							<div class="panel-heading">{{ .Name }}</div>
 							<div class="panel-body">
-								<form class="js-module js-{{ .ModuleId }}">
-									<input type="hidden" name="url" value="{{ .UrlPrefix }}">
-									{{ ModuleTemplate .Template .Module.Data }}
-								</form>
+								<input type="hidden" name="url" value="{{ .UrlPrefix }}">
+								{{ ModuleTemplate .Template .Module.Data }}
 							</div>
 						</div>
 					</div>

@@ -201,3 +201,11 @@ func (mp *MusicPlayer) Data() interface{} {
 		CurrentPlaylist: mp.playlistIndex,
 	}
 }
+
+func (mp *MusicPlayer) On() {
+
+}
+
+func (mp *MusicPlayer) Off() {
+
+}
