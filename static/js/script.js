@@ -34,6 +34,8 @@ var fireShowHide = function (self, on) {
 };
 
 $(function () {
+	$('.slider').slider();
+
 	modulesShowHide($('input[name=on]').val() === 'true');
 
 	$('.js-on').click(function () {
@@ -83,13 +85,6 @@ $(function () {
 		} else if ($(self).hasClass('js-fire')) {
 			fireShowHide(self, $(self).find('input[name=on]').val() === 'true');
 
-			$(self).find('.js-fire-field').each(function () {
-				var field = this;
-				$(field).find('input[type=range]').change(function () {
-					$(field).find('.js-fire-value').text($(this).val());
-				});
-			});
-
 			$(self).find('.js-fire-on').click(function () {
 				$.get(url + 'on');
 				fireShowHide(self, true);
@@ -100,17 +95,17 @@ $(function () {
 				fireShowHide(self, false);
 			});
 
-			$(self).find('input[name=color]').change(function () {
+			$(self).find('input[name=color]').on('slideStop', function () {
 				var value = $(this).val();
 				$.get(url + 'color/' + value);
 			});
 
-			$(self).find('input[name=light]').change(function () {
+			$(self).find('input[name=light]').on('slideStop', function () {
 				var value = $(this).val();
 				$.get(url + 'light/' + value);
 			});
 
-			$(self).find('input[name=speed]').change(function () {
+			$(self).find('input[name=speed]').on('slideStop', function () {
 				var value = $(this).val();
 				$.get(url + 'speed/' + value);
 			});
@@ -120,15 +115,13 @@ $(function () {
 				$.get(url + 'mode/' + value);
 			});
 
-			$(self).find('input[name=speed]').change(function () {
+			$(self).find('input[name=speed]').on('slideStop', function () {
 				var value = $(this).val();
-				$(self).find('.js-nebo-speed').text(value);
 				$.get(url + 'speed/' + value);
 			});
 		} else if ($(self).hasClass('js-pwm')) {
-			$(self).find('input[name=value]').change(function () {
+			$(self).find('input[name=value]').on('slideStop', function () {
 				var value = $(this).val();
-				$(self).find('.js-pwm-value').text(value);
 				$.get(url + '/' + value);
 			});
 		}

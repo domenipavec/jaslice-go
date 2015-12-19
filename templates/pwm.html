@@ -1,5 +1,4 @@
 <div class="form-group">
 	<label>Vrednost:</label>
-	<input type="range" name="value" min="0" max="255" value="{{ .Value }}">
-	<p class="help-block js-pwm-value">{{ .Value }}</p>
+	<input type="text" name="value" class="slider" data-slider-min="0" data-slider-max="255" data-slider-value="{{ .Value }}">
 </div>

@@ -9,6 +9,5 @@
 </div>
 <div class="form-group">
 	<label>Hitrost:</label>
-	<input type="range" name="speed" min="0" max="255" value="{{ .Speed }}">
-	<p class="help-block js-nebo-speed">{{ .Speed }}</p>
+	<input type="text" name="speed" class="slider" data-slider-min="0" data-slider-max="255" data-slider-value="{{ .Speed }}">
 </div>
