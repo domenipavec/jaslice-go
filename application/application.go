@@ -12,6 +12,7 @@ import (
 
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
+	rpio "github.com/stianeikeland/go-rpio"
 )
 
 const waitForPower = time.Millisecond * 100
@@ -49,7 +50,7 @@ type App struct {
 	moduleCounts       map[string]int
 
 	On       bool
-	powerPin embd.DigitalPin
+	powerPin rpio.Pin
 
 	I2cBus embd.I2CBus
 }
@@ -78,14 +79,20 @@ func (app *App) templateName(name string) string {
 }
 
 func (app *App) templateFile(name string) string {
-	return "./templates/" + app.templateName(name)
+	fn := "./templates/" + app.templateName(name)
+	if _, err := os.Stat(fn); os.IsNotExist(err) {
+		return ""
+	}
+	return fn
 }
 
 func (app *App) AddModule(name string, mc ModuleConstructor) {
 	app.moduleConstructors[name] = mc
 
-	if _, err := app.template.ParseFiles(app.templateFile(name)); err != nil {
-		log.Fatalln("Error parsing template", name, ":", err)
+	if fn := app.templateFile(name); fn != "" {
+		if _, err := app.template.ParseFiles(fn); err != nil {
+			log.Fatalln("Error parsing template", name, ":", err)
+		}
 	}
 
 	log.Println("Added module:", name)
@@ -122,11 +129,16 @@ func (app *App) initModule(moduleConfig ModuleConfig) {
 
 	urlPrefix := "/api/" + moduleConfig.Module + instanceNumber + "/"
 
+	template := ""
+	if app.templateFile(moduleConfig.Module) != "" {
+		template = app.templateName(moduleConfig.Module)
+	}
+
 	app.Modules = append(app.Modules, ModuleData{
 		Name:      moduleConfig.Name,
 		ModuleId:  moduleConfig.Module,
-		Template:  app.templateName(moduleConfig.Module),
 		UrlPrefix: urlPrefix,
+		Template:  template,
 		Module:    module,
 	})
 
@@ -137,32 +149,29 @@ func (app *App) initModule(moduleConfig ModuleConfig) {
 
 func (app *App) Start() {
 	var err error
+	time.Sleep(time.Second)
 
-	if err = embd.InitGPIO(); err != nil {
+	if err = rpio.Open(); err != nil {
 		log.Fatalln("Error init gpio:", err)
 	}
 
 	app.I2cBus = embd.NewI2CBus(1)
 
-	app.powerPin, err = embd.NewDigitalPin("P1_12")
-	if err != nil {
-		log.Fatalln("Error creating power pin:", err)
-	}
-
-	err = app.powerPin.SetDirection(embd.Out)
-	if err != nil {
-		log.Fatalln("Error set direction for power pin:", err)
-	}
+	app.powerPin = rpio.Pin(18)
+	app.powerPin.Mode(rpio.Output)
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", app)
 
-	log.Fatalln("Error serve:", http.ListenAndServe(":8080", nil))
+	log.Fatalln("Error serve:", http.ListenAndServe(":80", nil))
 }
 
 func (app *App) OnShutdown(string) error {
+	app.powerPin.Write(rpio.Low)
+
 	app.I2cBus.Close()
-	embd.CloseGPIO()
+	rpio.Close()
+
 	return nil
 }
 
@@ -175,33 +184,41 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	} else if r.URL.Path == "/api/on" {
 		if !app.On {
-			app.On = true
-
-			if err := app.powerPin.Write(embd.High); err != nil {
-				log.Println("Error writing power pin:", err)
-				w.WriteHeader(500)
-			}
-
-			time.Sleep(waitForPower)
-
-			for _, module := range app.Modules {
-				module.Module.On()
-			}
+			app.turnOn()
 		}
 	} else if r.URL.Path == "/api/off" {
 		if app.On {
-			app.On = false
-
-			for _, module := range app.Modules {
-				module.Module.Off()
-			}
-
-			if err := app.powerPin.Write(embd.Low); err != nil {
-				log.Println("Error writing power pin:", err)
-				w.WriteHeader(500)
-			}
+			app.turnOff()
+		}
+	} else if r.URL.Path == "/api/toggle" {
+		if app.On {
+			app.turnOff()
+		} else {
+			app.turnOn()
 		}
 	} else {
 		w.WriteHeader(404)
 	}
+}
+
+func (app *App) turnOn() {
+	app.On = true
+
+	app.powerPin.Write(rpio.High)
+
+	time.Sleep(waitForPower)
+
+	for _, module := range app.Modules {
+		module.Module.On()
+	}
+}
+
+func (app *App) turnOff() {
+	app.On = false
+
+	for _, module := range app.Modules {
+		module.Module.Off()
+	}
+
+	app.powerPin.Write(rpio.Low)
 }

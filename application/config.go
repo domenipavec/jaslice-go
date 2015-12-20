@@ -40,6 +40,14 @@ func (c Config) GetInt(name string) int {
 	return int(value)
 }
 
+func (c Config) GetString(name string) string {
+	value, ok := c.Get(name).(string)
+	if !ok {
+		log.Fatalf("Config value %s is not proper type: %T", name, c.Get(name))
+	}
+	return value
+}
+
 func (c Config) GetSlice(name string) []interface{} {
 	value, ok := c.Get(name).([]interface{})
 	if !ok {

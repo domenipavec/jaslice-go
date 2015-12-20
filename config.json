@@ -76,5 +76,23 @@
 			"min": 3,
 			"max": 15
 		}
+	},
+	{
+		"module": "button",
+		"name": "Tipka 1",
+		"config": {
+			"pin": 17,
+			"shortUrl": "/api/toggle",
+			"longUrl": "/api/relay1/toggle"
+		}
+	},
+	{
+		"module": "button",
+		"name": "Tipka 2",
+		"config": {
+			"pin": 22,
+			"shortUrl": "/api/musicplayer1/toggle",
+			"longUrl": "/api/musicplayer1/next"
+		}
 	}
 ]

@@ -32,15 +32,17 @@
 
 			<div class="row">
 				{{ range .Modules }}
-					<div class="col-xs-12 col-md-6 col-lg-4 js-module js-{{ .ModuleId }}">
-						<div class="panel panel-default">
-							<div class="panel-heading">{{ .Name }}</div>
-							<div class="panel-body">
-								<input type="hidden" name="url" value="{{ .UrlPrefix }}">
-								{{ ModuleTemplate .Template .Module.Data }}
+					{{ if .Template }}
+						<div class="col-xs-12 col-md-6 col-lg-4 js-module js-{{ .ModuleId }}">
+							<div class="panel panel-default">
+								<div class="panel-heading">{{ .Name }}</div>
+								<div class="panel-body">
+									<input type="hidden" name="url" value="{{ .UrlPrefix }}">
+									{{ ModuleTemplate .Template .Module.Data }}
+								</div>
 							</div>
 						</div>
-					</div>
+					{{ end }}
 				{{ end }}
 			</div>
 		</div>

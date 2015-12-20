@@ -36,6 +36,12 @@ func (relay *Relay) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if relay.currentOn {
 			relay.turnOff()
 		}
+	} else if command == "toggle" {
+		if relay.currentOn {
+			relay.turnOff()
+		} else {
+			relay.turnOn()
+		}
 	} else {
 		w.WriteHeader(404)
 	}

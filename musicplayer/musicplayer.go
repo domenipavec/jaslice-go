@@ -135,6 +135,8 @@ func (mp *MusicPlayer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		mp.playStop <- true
 	} else if command == "off" {
 		mp.playStop <- false
+	} else if command == "toggle" {
+		mp.playStop <- !mp.playing
 	} else if command == "next" {
 		mp.next <- true
 	} else if command == "song" {
