@@ -24,7 +24,7 @@ type Module interface {
 	Off()
 }
 
-type ModuleConstructor func(*App, map[string]interface{}) Module
+type ModuleConstructor func(*App, Config) Module
 
 type ModuleData struct {
 	Name      string
@@ -36,9 +36,9 @@ type ModuleData struct {
 }
 
 type ModuleConfig struct {
-	Module string                 `json:"module"`
-	Name   string                 `json:"name"`
-	Config map[string]interface{} `json:"config"`
+	Module string `json:"module"`
+	Name   string `json:"name"`
+	Config Config `json:"config"`
 }
 
 type App struct {

@@ -1,7 +1,6 @@
 package relay
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/matematik7/jaslice-go/application"
@@ -18,24 +17,12 @@ type Relay struct {
 	currentOn bool
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
-	relay := &Relay{
-		app: app,
+func New(app *application.App, config application.Config) application.Module {
+	return &Relay{
+		app:   app,
+		on:    config.GetBool("on"),
+		index: config.GetByte("index"),
 	}
-
-	on, success := config["on"].(bool)
-	if !success {
-		log.Fatalln("Unable to parse relay on:", config)
-	}
-	relay.on = on
-
-	index, success := config["index"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse relay index:", config)
-	}
-	relay.index = byte(index)
-
-	return relay
 }
 
 func (relay *Relay) ServeHTTP(w http.ResponseWriter, r *http.Request) {

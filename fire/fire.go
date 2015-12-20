@@ -24,36 +24,14 @@ type Fire struct {
 	on bool
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
-	fire := &Fire{
-		app: app,
+func New(app *application.App, config application.Config) application.Module {
+	return &Fire{
+		app:     app,
+		address: config.GetByte("address"),
+		speed:   config.GetByte("speed"),
+		color:   config.GetByte("color"),
+		light:   config.GetByte("light"),
 	}
-
-	address, success := config["address"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse fire address:", config)
-	}
-	fire.address = byte(address)
-
-	speed, success := config["speed"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse fire speed:", config)
-	}
-	fire.speed = byte(speed)
-
-	color, success := config["color"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse fire color:", config)
-	}
-	fire.color = byte(color)
-
-	light, success := config["light"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse fire light:", config)
-	}
-	fire.light = byte(light)
-
-	return fire
 }
 
 func (fire *Fire) ServeHTTP(w http.ResponseWriter, r *http.Request) {

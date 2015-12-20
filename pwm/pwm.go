@@ -19,24 +19,12 @@ type Pwm struct {
 	currentValue byte
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
-	pwm := &Pwm{
-		app: app,
+func New(app *application.App, config application.Config) application.Module {
+	return &Pwm{
+		app:   app,
+		value: config.GetByte("value"),
+		index: config.GetByte("index"),
 	}
-
-	value, success := config["value"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse pwm value:", config)
-	}
-	pwm.value = byte(value)
-
-	index, success := config["index"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse pwm index:", config)
-	}
-	pwm.index = byte(index)
-
-	return pwm
 }
 
 func (pwm *Pwm) ServeHTTP(w http.ResponseWriter, r *http.Request) {

@@ -33,24 +33,15 @@ type MusicPlayer struct {
 	songWebsockets []*websocket.Conn
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
+func New(app *application.App, config application.Config) application.Module {
 	mp := &MusicPlayer{
-		playStop: make(chan bool),
-		wait:     make(chan bool),
-		next:     make(chan bool),
+		playStop:  make(chan bool),
+		wait:      make(chan bool),
+		next:      make(chan bool),
+		playlists: config.GetSliceStrings("folders"),
 	}
 
-	folders, success := config["folders"].([]interface{})
-	if !success {
-		log.Fatalln("Folders must be a list:", config)
-	}
-
-	for _, folder := range folders {
-		playlist, success := folder.(string)
-		if !success {
-			log.Fatalln("Folder must be a string:", config)
-		}
-
+	for _, playlist := range mp.playlists {
 		songs, err := filepath.Glob(filepath.Join(playlist, "*.mp3"))
 		if err != nil {
 			log.Fatalln("Error globbing:", err)
@@ -58,7 +49,6 @@ func New(app *application.App, config map[string]interface{}) application.Module
 
 		log.Println("Found", len(songs), "songs in", playlist, "playlist.")
 
-		mp.playlists = append(mp.playlists, playlist)
 		mp.playlistSongs = append(mp.playlistSongs, songs)
 		mp.playlistShuffles = append(mp.playlistShuffles, nil)
 	}

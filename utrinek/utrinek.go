@@ -28,33 +28,18 @@ type Utrinek struct {
 	maxChan chan int
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
+func New(app *application.App, config application.Config) application.Module {
 	utrinek := &Utrinek{
 		app:     app,
+		address: config.GetByte("address"),
+		min:     config.GetInt("min"),
+		max:     config.GetInt("max"),
 		onChan:  make(chan bool),
 		minChan: make(chan int),
 		maxChan: make(chan int),
 	}
 
 	go utrinek.worker()
-
-	address, success := config["address"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse utrinek address:", config)
-	}
-	utrinek.address = byte(address)
-
-	min, success := config["min"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse utrinek min:", config)
-	}
-	utrinek.min = int(min)
-
-	max, success := config["max"].(float64)
-	if !success {
-		log.Fatalln("Unable to parse utrinek max:", config)
-	}
-	utrinek.max = int(max)
 
 	return utrinek
 }

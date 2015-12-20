@@ -20,12 +20,10 @@ type Nebo struct {
 	speed byte
 }
 
-func New(app *application.App, config map[string]interface{}) application.Module {
-	nebo := &Nebo{
+func New(app *application.App, config application.Config) application.Module {
+	return &Nebo{
 		app: app,
 	}
-
-	return nebo
 }
 
 func (nebo *Nebo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
