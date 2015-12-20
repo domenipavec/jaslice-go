@@ -1,10 +1,7 @@
 package nebo
 
 import (
-	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/matematik7/jaslice-go/application"
 )
@@ -29,35 +26,9 @@ func New(app *application.App, config application.Config) application.Module {
 func (nebo *Nebo) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	command := r.URL.Path
 
-	if strings.HasPrefix(command, "mode/") {
-		mode, err := strconv.Atoi(command[5:])
-		if err != nil {
-			log.Println("Error decoding mode:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if mode >= len(modes) || mode < 0 {
-			log.Println("Mode out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	if mode, ok := application.CommandInt(w, command, "mode/", 0, len(modes)-1); ok {
 		nebo.setMode(byte(mode))
-	} else if strings.HasPrefix(command, "speed/") {
-		speed, err := strconv.Atoi(command[6:])
-		if err != nil {
-			log.Println("Error decoding speed:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if speed > 255 || speed < 0 {
-			log.Println("Speed out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if speed, ok := application.CommandInt(w, command, "speed/", 0, 255); ok {
 		nebo.setSpeed(byte(speed))
 	} else {
 		w.WriteHeader(404)

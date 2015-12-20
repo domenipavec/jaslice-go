@@ -1,10 +1,7 @@
 package fire
 
 import (
-	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/matematik7/jaslice-go/application"
 )
@@ -41,50 +38,11 @@ func (fire *Fire) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		fire.On()
 	} else if command == "off" {
 		fire.Off()
-	} else if strings.HasPrefix(command, "color/") {
-		color, err := strconv.Atoi(command[6:])
-		if err != nil {
-			log.Println("Error decoding color:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if color > 255 || color < 0 {
-			log.Println("Color out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if color, ok := application.CommandInt(w, command, "color/", 0, 255); ok {
 		fire.setColor(byte(color))
-	} else if strings.HasPrefix(command, "light/") {
-		light, err := strconv.Atoi(command[6:])
-		if err != nil {
-			log.Println("Error decoding light:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if light > 255 || light < 0 {
-			log.Println("Light out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if light, ok := application.CommandInt(w, command, "light/", 0, 255); ok {
 		fire.setLight(byte(light))
-	} else if strings.HasPrefix(command, "speed/") {
-		speed, err := strconv.Atoi(command[6:])
-		if err != nil {
-			log.Println("Error decoding speed:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if speed > 255 || speed < 0 {
-			log.Println("Speed out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if speed, ok := application.CommandInt(w, command, "speed/", 0, 255); ok {
 		fire.setSpeed(byte(speed))
 	} else {
 		w.WriteHeader(404)

@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"os/exec"
 	"path/filepath"
-	"strconv"
-	"strings"
 	"time"
 
 	"golang.org/x/net/websocket"
@@ -141,21 +139,8 @@ func (mp *MusicPlayer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		mp.next <- true
 	} else if command == "song" {
 		mp.songHandler.ServeHTTP(w, r)
-	} else if strings.HasPrefix(command, "playlist/") {
-		newIndex, err := strconv.Atoi(command[9:])
-		if err != nil {
-			log.Println(err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if newIndex >= len(mp.playlists) || newIndex < 0 {
-			log.Println("Index out of range")
-			w.WriteHeader(400)
-			return
-		}
-
-		mp.playlistIndex = newIndex
+	} else if index, ok := application.CommandInt(w, command, "playlist/", 0, len(mp.playlists)-1); ok {
+		mp.playlistIndex = index
 	} else {
 		w.WriteHeader(404)
 	}

@@ -1,11 +1,8 @@
 package utrinek
 
 import (
-	"log"
 	"math/rand"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/matematik7/jaslice-go/application"
@@ -53,35 +50,9 @@ func (utrinek *Utrinek) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		utrinek.On()
 	} else if command == "off" {
 		utrinek.Off()
-	} else if strings.HasPrefix(command, "min/") {
-		min, err := strconv.Atoi(command[4:])
-		if err != nil {
-			log.Println("Error decoding min:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if min < 0 || min > utrinek.currentMax {
-			log.Println("Utrinek min out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if min, ok := application.CommandInt(w, command, "min/", 0, utrinek.currentMax); ok {
 		utrinek.minChan <- min
-	} else if strings.HasPrefix(command, "max/") {
-		max, err := strconv.Atoi(command[4:])
-		if err != nil {
-			log.Println("Error decoding max:", err)
-			w.WriteHeader(500)
-			return
-		}
-
-		if max < utrinek.currentMin {
-			log.Println("Light out of range")
-			w.WriteHeader(500)
-			return
-		}
-
+	} else if max, ok := application.CommandInt(w, command, "max/", utrinek.currentMin, 100000); ok {
 		utrinek.maxChan <- max
 	} else {
 		w.WriteHeader(404)

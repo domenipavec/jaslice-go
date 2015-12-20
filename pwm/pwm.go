@@ -1,9 +1,7 @@
 package pwm
 
 import (
-	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/matematik7/jaslice-go/application"
 )
@@ -28,20 +26,9 @@ func New(app *application.App, config application.Config) application.Module {
 }
 
 func (pwm *Pwm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	value, err := strconv.Atoi(r.URL.Path)
-	if err != nil {
-		log.Println("Error decoding value:", err)
-		w.WriteHeader(500)
-		return
+	if value, ok := application.CommandInt(w, r.URL.Path, "", 0, 255); ok {
+		pwm.setValue(byte(value))
 	}
-
-	if value > 255 || value < 0 {
-		log.Println("Value out of range")
-		w.WriteHeader(500)
-		return
-	}
-
-	pwm.setValue(byte(value))
 }
 
 type data struct {
