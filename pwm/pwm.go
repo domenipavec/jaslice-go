@@ -28,6 +28,8 @@ func New(app *application.App, config application.Config) application.Module {
 func (pwm *Pwm) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if value, ok := application.CommandInt(w, r.URL.Path, "", 0, 255); ok {
 		pwm.setValue(byte(value))
+	} else {
+		w.WriteHeader(404)
 	}
 }
 
