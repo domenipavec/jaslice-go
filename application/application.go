@@ -167,7 +167,7 @@ func (app *App) Start() {
 }
 
 func (app *App) OnShutdown(string) error {
-	app.powerPin.Write(rpio.Low)
+	app.turnOff()
 
 	app.I2cBus.Close()
 	rpio.Close()

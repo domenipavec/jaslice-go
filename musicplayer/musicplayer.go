@@ -178,5 +178,5 @@ func (mp *MusicPlayer) On() {
 }
 
 func (mp *MusicPlayer) Off() {
-
+	mp.playStop <- false
 }
