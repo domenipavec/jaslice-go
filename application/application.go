@@ -16,6 +16,7 @@ import (
 )
 
 const waitForPower = time.Millisecond * 100
+const waitBetweenInits = time.Millisecond * 10
 
 type Module interface {
 	http.Handler
@@ -210,6 +211,7 @@ func (app *App) turnOn() {
 
 	for _, module := range app.Modules {
 		module.Module.On()
+		time.Sleep(waitBetweenInits)
 	}
 }
 
