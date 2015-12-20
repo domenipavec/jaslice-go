@@ -1,0 +1,9 @@
+{{ $current := .Mode }}
+<div class="form-group">
+	<label for="mode">Mena:</label>
+	<select class="form-control js-select" name="">
+		{{ range $index, $mode := .Modes }}
+			<option value="{{ $index }}"{{ if eq $index $current }} selected{{ end }}>{{ $mode }}</option>
+		{{ end }}
+	</select>
+</div>
