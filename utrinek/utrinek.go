@@ -83,8 +83,9 @@ func (utrinek *Utrinek) getTimer() *time.Timer {
 	if diff <= 0 {
 		diff = 1
 	}
-	seconds := utrinek.currentMin + rand.Intn(diff)
-	duration := time.Duration(seconds) * time.Second
+	diff *= 1000
+	seconds := 1000*utrinek.currentMin + rand.Intn(diff)
+	duration := time.Duration(seconds) * time.Millisecond
 	return time.NewTimer(duration)
 }
 
