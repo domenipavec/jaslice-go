@@ -1,6 +1,7 @@
 package musicplayer
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -12,6 +13,9 @@ import (
 
 	"github.com/matematik7/jaslice-go/application"
 )
+
+// numid check with amixer controls
+const volumeId = 1
 
 type MusicPlayer struct {
 	playStop chan bool
@@ -29,6 +33,8 @@ type MusicPlayer struct {
 	currentSong    string
 	songHandler    websocket.Handler
 	songWebsockets []*websocket.Conn
+
+	volume int
 }
 
 func New(app *application.App, config application.Config) application.Module {
@@ -37,6 +43,7 @@ func New(app *application.App, config application.Config) application.Module {
 		wait:      make(chan bool),
 		next:      make(chan bool),
 		playlists: config.GetSliceStrings("folders"),
+		volume:    100,
 	}
 
 	for _, playlist := range mp.playlists {
@@ -143,9 +150,21 @@ func (mp *MusicPlayer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		mp.songHandler.ServeHTTP(w, r)
 	} else if index, ok := application.CommandInt(w, command, "playlist/", 0, len(mp.playlists)-1); ok {
 		mp.playlistIndex = index
+	} else if volume, ok := application.CommandInt(w, command, "volume/", 0, 100); ok {
+		mp.SetVolume(volume)
 	} else {
 		w.WriteHeader(404)
 	}
+}
+
+func (mp *MusicPlayer) SetVolume(volume int) {
+	command := exec.Command("amixer", "cset", fmt.Sprintf("numid=%d", volumeId), fmt.Sprintf("%d%%", volume))
+	err := command.Run()
+	if err != nil {
+		log.Println("Error setting volume:", err)
+		return
+	}
+	mp.volume = volume
 }
 
 func (mp *MusicPlayer) SongWebsocket(ws *websocket.Conn) {
@@ -162,6 +181,8 @@ type data struct {
 
 	Playlists       []string
 	CurrentPlaylist int
+
+	Volume int
 }
 
 func (mp *MusicPlayer) Data() interface{} {
@@ -170,6 +191,8 @@ func (mp *MusicPlayer) Data() interface{} {
 
 		Playlists:       mp.playlists,
 		CurrentPlaylist: mp.playlistIndex,
+
+		Volume: mp.volume,
 	}
 }
 
