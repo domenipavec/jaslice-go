@@ -52,6 +52,14 @@
 		}
 	},
 	{
+		"module": "pwm",
+		"name": "Luč v vodi",
+		"config": {
+			"index": 1,
+			"value": 128
+		}
+	},
+	{
 		"module": "relay",
 		"name": "Voda",
 		"config": {
@@ -64,8 +72,8 @@
 		"name": "Utrinek 1",
 		"config": {
 			"address": 64,
-			"min": 3,
-			"max": 15
+			"min": 5,
+			"max": 30
 		}
 	},
 	{
@@ -73,8 +81,17 @@
 		"name": "Utrinek 2",
 		"config": {
 			"address": 65,
-			"min": 3,
-			"max": 15
+			"min": 5,
+			"max": 30
+		}
+	},
+	{
+		"module": "utrinek",
+		"name": "Utrinek 3",
+		"config": {
+			"address": 66,
+			"min": 5,
+			"max": 30
 		}
 	},
 	{
