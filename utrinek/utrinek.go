@@ -106,7 +106,7 @@ func (utrinek *Utrinek) worker() {
 			utrinek.currentMin = min
 			timer = utrinek.getTimer()
 		case max := <-utrinek.maxChan:
-			utrinek.currentMin = max
+			utrinek.currentMax = max
 			timer = utrinek.getTimer()
 		case <-timer.C:
 			utrinek.show()
