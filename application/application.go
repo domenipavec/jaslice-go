@@ -15,7 +15,7 @@ import (
 	rpio "github.com/stianeikeland/go-rpio"
 )
 
-const waitForPower = time.Millisecond * 100
+const waitForPower = time.Millisecond * 500
 const waitBetweenInits = time.Millisecond * 10
 
 type Module interface {
@@ -198,6 +198,7 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			app.turnOn()
 		}
 	} else {
+		log.Println("404:", r.URL.Path)
 		w.WriteHeader(404)
 	}
 }
