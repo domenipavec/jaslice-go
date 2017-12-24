@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fromkeith/gossdp"
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
 	rpio "github.com/stianeikeland/go-rpio"
@@ -54,6 +55,8 @@ type App struct {
 	powerPin rpio.Pin
 
 	I2cBus embd.I2CBus
+
+	Ssdp *gossdp.Ssdp
 }
 
 func New() *App {
@@ -61,6 +64,12 @@ func New() *App {
 		moduleCounts:       make(map[string]int),
 		moduleConstructors: make(map[string]ModuleConstructor),
 		template:           template.New("index.html"),
+	}
+
+	var err error
+	app.Ssdp, err = gossdp.NewSsdp(nil)
+	if err != nil {
+		log.Fatalln("Error init ssdp:", err)
 	}
 
 	app.template.Funcs(map[string]interface{}{
@@ -158,6 +167,8 @@ func (app *App) Start() {
 
 	app.I2cBus = embd.NewI2CBus(1)
 
+	go app.Ssdp.Start()
+
 	app.powerPin = rpio.Pin(18)
 	app.powerPin.Mode(rpio.Output)
 
@@ -171,6 +182,7 @@ func (app *App) OnShutdown(string) error {
 	app.turnOff()
 
 	app.I2cBus.Close()
+	app.Ssdp.Stop()
 	rpio.Close()
 
 	return nil

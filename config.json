@@ -1,15 +1,5 @@
 [
 	{
-		"module": "musicplayer",
-		"name": "Glasba",
-		"config": {
-			"folders": [
-				"/home/domen/bozicna/youtube-playlist",
-				"/home/domen/bozicna/100-hits-christmas-legends"
-			]
-		}
-	},
-	{
 		"module": "fire",
 		"name": "Ogenj 1",
 		"config": {
@@ -47,7 +37,7 @@
 		"module": "pwm",
 		"name": "Luč v hlevčku",
 		"config": {
-			"index": 0,
+			"index": 2,
 			"value": 128
 		}
 	},
@@ -95,6 +85,14 @@
 		}
 	},
 	{
+		"module": "luna",
+		"name": "Luna",
+		"config": {
+			"clientId": "CLIENTID",
+			"clientSecret": "CLIENTSECRET"
+		}
+	},
+	{
 		"module": "button",
 		"name": "Tipka 1",
 		"config": {
@@ -104,20 +102,21 @@
 		}
 	},
 	{
-		"module": "button",
-		"name": "Tipka 2",
+		"module": "alexa",
+		"name": "Alexa jaslice",
 		"config": {
-			"pin": 22,
-			"shortUrl": "/api/musicplayer1/toggle",
-			"longUrl": "/api/musicplayer1/next"
+			"invocation": "yazlind",
+			"onUrl": "/api/on",
+			"offUrl": "/api/off"
 		}
 	},
 	{
-		"module": "luna",
-		"name": "Luna",
+		"module": "alexa",
+		"name": "Alexa water",
 		"config": {
-			"clientId": "ID",
-			"clientSecret": "SECRET"
+			"invocation": "water",
+			"onUrl": "/api/relay1/on",
+			"offUrl": "/api/relay1/off"
 		}
 	}
 ]

@@ -8,6 +8,7 @@ import (
 	"github.com/Zemanta/gracefulshutdown"
 	"github.com/Zemanta/gracefulshutdown/shutdownmanagers/posixsignal"
 
+	"github.com/matematik7/jaslice-go/alexa"
 	"github.com/matematik7/jaslice-go/application"
 	"github.com/matematik7/jaslice-go/button"
 	"github.com/matematik7/jaslice-go/fire"
@@ -36,8 +37,9 @@ func main() {
 	app.AddModule("pwm", pwm.New)
 	app.AddModule("relay", relay.New)
 	app.AddModule("utrinek", utrinek.New)
-	app.AddModule("button", button.New)
 	app.AddModule("luna", luna.New)
+	app.AddModule("button", button.New)
+	app.AddModule("alexa", alexa.New)
 
 	app.Initialize("config.json")
 
