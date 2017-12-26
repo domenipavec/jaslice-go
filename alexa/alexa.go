@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
+	"net"
 	"net/http"
 
 	"github.com/fromkeith/gossdp"
@@ -32,6 +32,19 @@ type Alexa struct {
 	offUrl     string
 }
 
+// Get preferred outbound ip of this machine
+func GetOutboundIP() net.IP {
+	conn, err := net.Dial("udp", "8.8.8.8:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+
+	return localAddr.IP
+}
+
 func New(app *application.App, config application.Config) application.Module {
 	alexa := &Alexa{
 		invocation: config.GetString("invocation"),
@@ -39,13 +52,17 @@ func New(app *application.App, config application.Config) application.Module {
 		offUrl:     config.GetString("offUrl"),
 	}
 
-	port := 40000 + rand.Intn(10000)
-	serial := "Socket-1_0-" + uuid.NewV4().String()
+	uid := uuid.NewV3(uuid.NamespaceDNS, alexa.invocation)
+	ip := GetOutboundIP()
+	port := 40000 + int(uid[0]) + int(uid[1])*10
+	serial := "Socket-1_0-" + uid.String()
+
+	log.Printf("Running %s on %s:%d", serial, ip, port)
 
 	serverDef := gossdp.AdvertisableServer{
 		ServiceType: "urn:Belkin:device:**",
 		DeviceUuid:  serial,
-		Location:    fmt.Sprintf("http://172.23.163.16:%d/setup.xml", port),
+		Location:    fmt.Sprintf("http://%s:%d/setup.xml", ip, port),
 		MaxAge:      86400,
 	}
 
@@ -79,7 +96,17 @@ func New(app *application.App, config application.Config) application.Module {
 		}
 	})
 
-	go http.ListenAndServe(fmt.Sprintf(":%d", port), mux)
+	go func() {
+		s := &http.Server{
+			Addr:    fmt.Sprintf(":%d", port),
+			Handler: mux,
+		}
+		s.SetKeepAlivesEnabled(false)
+		err := s.ListenAndServe()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 	app.Ssdp.AdvertiseServer(serverDef)
 
 	return alexa

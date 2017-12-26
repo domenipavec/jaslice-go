@@ -30,7 +30,9 @@ func New(app *application.App, config application.Config) application.Module {
 		longUrl:  config.GetString("longUrl"),
 	}
 
-	go button.poll()
+	if app.GpioEnabled {
+		go button.poll()
+	}
 
 	return button
 }

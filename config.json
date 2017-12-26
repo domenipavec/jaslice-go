@@ -118,5 +118,176 @@
 			"onUrl": "/api/relay1/on",
 			"offUrl": "/api/relay1/off"
 		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa ogenj 1",
+		"config": {
+			"invocation": "fire one",
+			"onUrl": "/api/fire1/on",
+			"offUrl": "/api/fire1/off"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa ogenj 2",
+		"config": {
+			"invocation": "fire two",
+			"onUrl": "/api/fire2/on",
+			"offUrl": "/api/fire2/off"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa ogenj 3",
+		"config": {
+			"invocation": "fire three",
+			"onUrl": "/api/fire3/on",
+			"offUrl": "/api/fire3/off"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 0",
+		"config": {
+			"invocation": "sky",
+			"onUrl": "/api/nebo1/mode/1",
+			"offUrl": "/api/nebo1/mode/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 1",
+		"config": {
+			"invocation": "sky normal",
+			"onUrl": "/api/nebo1/mode/1",
+			"offUrl": "/api/nebo1/mode/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 2",
+		"config": {
+			"invocation": "sky constellations",
+			"onUrl": "/api/nebo1/mode/2",
+			"offUrl": "/api/nebo1/mode/1"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 3",
+		"config": {
+			"invocation": "sky even",
+			"onUrl": "/api/nebo1/mode/3",
+			"offUrl": "/api/nebo1/mode/1"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 4",
+		"config": {
+			"invocation": "sky flash single",
+			"onUrl": "/api/nebo1/mode/4",
+			"offUrl": "/api/nebo1/mode/1"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa nebo mode 5",
+		"config": {
+			"invocation": "sky flash multi",
+			"onUrl": "/api/nebo1/mode/5",
+			"offUrl": "/api/nebo1/mode/1"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna 0",
+		"config": {
+			"invocation": "moon",
+			"onUrl": "",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna right 1",
+		"config": {
+			"invocation": "moon right one",
+			"onUrl": "/api/luna1/1",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna right 2",
+		"config": {
+			"invocation": "moon right two",
+			"onUrl": "/api/luna1/2",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna right 3",
+		"config": {
+			"invocation": "moon right three",
+			"onUrl": "/api/luna1/3",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna right 4",
+		"config": {
+			"invocation": "moon right four",
+			"onUrl": "/api/luna1/4",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna full",
+		"config": {
+			"invocation": "moon full",
+			"onUrl": "/api/luna1/5",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna left 1",
+		"config": {
+			"invocation": "moon left one",
+			"onUrl": "/api/luna1/9",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna left 2",
+		"config": {
+			"invocation": "moon left two",
+			"onUrl": "/api/luna1/8",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna left 3",
+		"config": {
+			"invocation": "moon left three",
+			"onUrl": "/api/luna1/7",
+			"offUrl": "/api/luna1/0"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa luna left 4",
+		"config": {
+			"invocation": "moon left four",
+			"onUrl": "/api/luna1/6",
+			"offUrl": "/api/luna1/0"
+		}
 	}
 ]

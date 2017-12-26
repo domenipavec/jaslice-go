@@ -51,8 +51,9 @@ type App struct {
 	moduleConstructors map[string]ModuleConstructor
 	moduleCounts       map[string]int
 
-	On       bool
-	powerPin rpio.Pin
+	On          bool
+	powerPin    rpio.Pin
+	GpioEnabled bool
 
 	I2cBus embd.I2CBus
 
@@ -70,6 +71,12 @@ func New() *App {
 	app.Ssdp, err = gossdp.NewSsdp(nil)
 	if err != nil {
 		log.Fatalln("Error init ssdp:", err)
+	}
+
+	app.GpioEnabled = true
+	if err = rpio.Open(); err != nil {
+		log.Printf("Error init gpio: %s, running without gpio", err)
+		app.GpioEnabled = false
 	}
 
 	app.template.Funcs(map[string]interface{}{
@@ -158,19 +165,15 @@ func (app *App) initModule(moduleConfig ModuleConfig) {
 }
 
 func (app *App) Start() {
-	var err error
 	time.Sleep(time.Second)
-
-	if err = rpio.Open(); err != nil {
-		log.Fatalln("Error init gpio:", err)
-	}
-
-	app.I2cBus = embd.NewI2CBus(1)
 
 	go app.Ssdp.Start()
 
-	app.powerPin = rpio.Pin(18)
-	app.powerPin.Mode(rpio.Output)
+	if app.GpioEnabled {
+		app.I2cBus = embd.NewI2CBus(1)
+		app.powerPin = rpio.Pin(18)
+		app.powerPin.Mode(rpio.Output)
+	}
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", app)
