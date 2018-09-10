@@ -205,89 +205,53 @@
 		"name": "Alexa luna 0",
 		"config": {
 			"invocation": "moon",
-			"onUrl": "",
-			"offUrl": "/api/luna1/0"
-		}
-	},
-	{
-		"module": "alexa",
-		"name": "Alexa luna right 1",
-		"config": {
-			"invocation": "moon right one",
-			"onUrl": "/api/luna1/1",
-			"offUrl": "/api/luna1/0"
-		}
-	},
-	{
-		"module": "alexa",
-		"name": "Alexa luna right 2",
-		"config": {
-			"invocation": "moon right two",
-			"onUrl": "/api/luna1/2",
-			"offUrl": "/api/luna1/0"
-		}
-	},
-	{
-		"module": "alexa",
-		"name": "Alexa luna right 3",
-		"config": {
-			"invocation": "moon right three",
-			"onUrl": "/api/luna1/3",
-			"offUrl": "/api/luna1/0"
-		}
-	},
-	{
-		"module": "alexa",
-		"name": "Alexa luna right 4",
-		"config": {
-			"invocation": "moon right four",
-			"onUrl": "/api/luna1/4",
-			"offUrl": "/api/luna1/0"
-		}
-	},
-	{
-		"module": "alexa",
-		"name": "Alexa luna full",
-		"config": {
-			"invocation": "moon full",
 			"onUrl": "/api/luna1/5",
 			"offUrl": "/api/luna1/0"
 		}
 	},
 	{
 		"module": "alexa",
-		"name": "Alexa luna left 1",
+		"name": "Alexa luna 1",
 		"config": {
-			"invocation": "moon left one",
-			"onUrl": "/api/luna1/9",
-			"offUrl": "/api/luna1/0"
+			"invocation": "moon one",
+			"onUrl": "/api/luna1/1",
+			"offUrl": "/api/luna1/9"
 		}
 	},
 	{
 		"module": "alexa",
-		"name": "Alexa luna left 2",
+		"name": "Alexa luna 2",
 		"config": {
-			"invocation": "moon left two",
-			"onUrl": "/api/luna1/8",
-			"offUrl": "/api/luna1/0"
+			"invocation": "moon two",
+			"onUrl": "/api/luna1/2",
+			"offUrl": "/api/luna1/8"
 		}
 	},
 	{
 		"module": "alexa",
-		"name": "Alexa luna left 3",
+		"name": "Alexa luna 3",
 		"config": {
-			"invocation": "moon left three",
-			"onUrl": "/api/luna1/7",
-			"offUrl": "/api/luna1/0"
+			"invocation": "moon three",
+			"onUrl": "/api/luna1/3",
+			"offUrl": "/api/luna1/7"
 		}
 	},
 	{
 		"module": "alexa",
-		"name": "Alexa luna left 4",
+		"name": "Alexa luna 4",
 		"config": {
-			"invocation": "moon left four",
-			"onUrl": "/api/luna1/6",
-			"offUrl": "/api/luna1/0"
+			"invocation": "moon four",
+			"onUrl": "/api/luna1/4",
+			"offUrl": "/api/luna1/6"
+		}
+	},
+	{
+		"module": "alexa",
+		"name": "Alexa relay",
+		"config": {
+			"invocation": "relay",
+			"onUrl": "/api/relay2/on",
+			"offUrl": "/api/relay2/off"
 		}
 	}
 ]

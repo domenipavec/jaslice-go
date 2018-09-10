@@ -68,6 +68,7 @@ func New(app *application.App, config application.Config) application.Module {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/setup.xml", func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("setup.xml for %s:%d", ip, port)
 		fmt.Fprintf(w, SetupXML, alexa.invocation, serial)
 	})
 	mux.HandleFunc("/upnp/control/basicevent1", func(w http.ResponseWriter, r *http.Request) {
