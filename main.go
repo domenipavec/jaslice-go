@@ -19,6 +19,7 @@ import (
 	"github.com/matematik7/jaslice-go/relay"
 	"github.com/matematik7/jaslice-go/triac"
 	"github.com/matematik7/jaslice-go/utrinek"
+	"github.com/matematik7/jaslice-go/utrinki"
 )
 
 func main() {
@@ -38,6 +39,7 @@ func main() {
 	app.AddModule("pwm", pwm.New)
 	app.AddModule("relay", relay.New)
 	app.AddModule("utrinek", utrinek.New)
+	app.AddModule("utrinki", utrinki.New)
 	app.AddModule("luna", luna.New)
 	app.AddModule("button", button.New)
 	app.AddModule("alexa", alexa.New)

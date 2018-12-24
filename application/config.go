@@ -67,3 +67,15 @@ func (c Config) GetSliceStrings(name string) []string {
 	}
 	return data
 }
+
+func (c Config) GetSliceConfigs(name string) []Config {
+	data := []Config{}
+	for i, item := range c.GetSlice(name) {
+		value, ok := item.(map[string]interface{})
+		if !ok {
+			log.Fatalf("List item %d for %s is not map, is: %T", i, name, item)
+		}
+		data = append(data, Config(value))
+	}
+	return data
+}

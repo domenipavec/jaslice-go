@@ -1,5 +1,41 @@
 [
 	{
+		"module": "utrinki",
+		"name": "Utrinki",
+		"config": {
+			"min": 5,
+			"max": 30,
+			"utrinki": [{
+				"type": "old",
+				"address": 64
+			}, {
+				"type": "old",
+				"address": 65
+			}, {
+				"type": "old",
+				"address": 66
+			}, {
+				"type": "new",
+				"address": 1
+			}, {
+				"type": "new",
+				"address": 2
+			}, {
+				"type": "new",
+				"address": 3
+			}, {
+				"type": "new",
+				"address": 4
+			}, {
+				"type": "new",
+				"address": 5
+			}, {
+				"type": "new",
+				"address": 6
+			}]
+		}
+	},
+	{
 		"module": "fire",
 		"name": "Ogenj 1",
 		"config": {
@@ -73,33 +109,6 @@
 		"config": {
 			"index": 1,
 			"on": true
-		}
-	},
-	{
-		"module": "utrinek",
-		"name": "Utrinek 1",
-		"config": {
-			"address": 64,
-			"min": 5,
-			"max": 30
-		}
-	},
-	{
-		"module": "utrinek",
-		"name": "Utrinek 2",
-		"config": {
-			"address": 65,
-			"min": 5,
-			"max": 30
-		}
-	},
-	{
-		"module": "utrinek",
-		"name": "Utrinek 3",
-		"config": {
-			"address": 66,
-			"min": 5,
-			"max": 30
 		}
 	},
 	{

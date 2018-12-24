@@ -92,7 +92,7 @@ $(function () {
 			socket.onmessage = function (event) {
 				$(self).find('.js-musicplayer-song').text(event.data);
 			};
-		} else if ($(self).hasClass('js-utrinek')) {
+		} else if ($(self).hasClass('js-utrinek') || $(self).hasClass('js-utrinki')) {
 			var oldVal = $(self).find('input[name=interval]').val().split(',');
 			$(self).find('input[name=interval]').on('slideStop', function () {
 				var newVal = $(this).val().split(',');

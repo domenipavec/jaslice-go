@@ -1,13 +1,13 @@
 {{ $current := .CurrentPlaylist }}
 <input type="hidden" name="on" value="{{ .Playing }}">
 <div class="form-group">
-	<a class="btn btn-primary js-module-on" href="#" role="button" title="Predvajaj">
+	<a class="btn btn-primary js-module-on" role="button" title="Predvajaj">
 		<span class="glyphicon glyphicon-play" aria-hidden="true"></span>
 	</a>
-	<a class="btn btn-primary js-module-off" href="#" role="button" title="Stop">
+	<a class="btn btn-primary js-module-off" role="button" title="Stop">
 		<span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
 	</a>
-	<a class="btn btn-default js-button js-module-show-on" href="#" role="button" title="Naslednja pesem" data-path="next">
+	<a class="btn btn-default js-button js-module-show-on" role="button" title="Naslednja pesem" data-path="next">
 		<span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span>
 	</a>
 </div>

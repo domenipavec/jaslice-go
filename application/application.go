@@ -3,7 +3,10 @@ package application
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"html/template"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +17,7 @@ import (
 	"github.com/kidoman/embd"
 	_ "github.com/kidoman/embd/host/rpi"
 	rpio "github.com/stianeikeland/go-rpio"
+	"github.com/tarm/serial"
 )
 
 const waitForPower = time.Millisecond * 500
@@ -58,6 +62,8 @@ type App struct {
 	GpioEnabled bool
 
 	I2cBus embd.I2CBus
+
+	Serial io.Writer
 
 	Ssdp *gossdp.Ssdp
 }
@@ -183,6 +189,7 @@ func (app *App) Start() {
 	} else {
 		app.I2cBus = &fakeI2C{}
 	}
+	app.Serial = app.getSerial()
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", app)
@@ -197,6 +204,9 @@ func (app *App) OnShutdown(string) error {
 	if app.GpioEnabled {
 		app.I2cBus.Close()
 		rpio.Close()
+	}
+	if serialCloser, ok := app.Serial.(io.Closer); ok {
+		serialCloser.Close()
 	}
 
 	return nil
@@ -253,5 +263,36 @@ func (app *App) turnOff() {
 
 	if app.GpioEnabled {
 		app.powerPin.Write(rpio.Low)
+	}
+}
+
+func (app *App) getSerial() io.Writer {
+	for i := 0; i < 3; i++ {
+		name := fmt.Sprintf("/dev/ttyUSB%d", i)
+		s, err := serial.OpenPort(&serial.Config{
+			Name: name,
+			Baud: 19200,
+		})
+		if err != nil {
+			log.Printf("Could not open serial %s: %v", name, err)
+			continue
+		}
+		return s
+	}
+	return ioutil.Discard
+}
+
+func (app *App) SerialPacket(address byte, data ...byte) {
+	if len(data) > 0xf {
+		log.Printf("Could not send %d bytes to %d, too long.", len(data), address)
+		return
+	}
+
+	header := address&0xf | byte(len(data)<<4)
+	send := append([]byte{header}, data...)
+
+	_, err := app.Serial.Write(send)
+	if err != nil {
+		log.Printf("Could not write to %d: %v", address, err)
 	}
 }
