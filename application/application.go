@@ -34,6 +34,7 @@ type ModuleData struct {
 	ModuleId  string
 	Template  string
 	UrlPrefix string
+	Hidden    bool
 
 	Module Module
 }
@@ -41,6 +42,7 @@ type ModuleData struct {
 type ModuleConfig struct {
 	Module string `json:"module"`
 	Name   string `json:"name"`
+	Hidden bool   `json:"hidden"`
 	Config Config `json:"config"`
 }
 
@@ -139,7 +141,11 @@ func (app *App) Initialize(configFn string) {
 }
 
 func (app *App) initModule(moduleConfig ModuleConfig) {
-	module := app.moduleConstructors[moduleConfig.Module](app, moduleConfig.Config)
+	constructor, ok := app.moduleConstructors[moduleConfig.Module]
+	if !ok {
+		log.Fatalf("Module %s does not exist.", moduleConfig.Module)
+	}
+	module := constructor(app, moduleConfig.Config)
 
 	app.moduleCounts[moduleConfig.Module] += 1
 	instanceNumber := strconv.Itoa(app.moduleCounts[moduleConfig.Module])
@@ -154,6 +160,7 @@ func (app *App) initModule(moduleConfig ModuleConfig) {
 	app.Modules = append(app.Modules, ModuleData{
 		Name:      moduleConfig.Name,
 		ModuleId:  moduleConfig.Module,
+		Hidden:    moduleConfig.Hidden,
 		UrlPrefix: urlPrefix,
 		Template:  template,
 		Module:    module,
@@ -173,6 +180,8 @@ func (app *App) Start() {
 		app.I2cBus = embd.NewI2CBus(1)
 		app.powerPin = rpio.Pin(18)
 		app.powerPin.Mode(rpio.Output)
+	} else {
+		app.I2cBus = &fakeI2C{}
 	}
 
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
@@ -184,9 +193,11 @@ func (app *App) Start() {
 func (app *App) OnShutdown(string) error {
 	app.turnOff()
 
-	app.I2cBus.Close()
 	app.Ssdp.Stop()
-	rpio.Close()
+	if app.GpioEnabled {
+		app.I2cBus.Close()
+		rpio.Close()
+	}
 
 	return nil
 }
@@ -221,7 +232,9 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (app *App) turnOn() {
 	app.On = true
 
-	app.powerPin.Write(rpio.High)
+	if app.GpioEnabled {
+		app.powerPin.Write(rpio.High)
+	}
 
 	time.Sleep(waitForPower)
 
@@ -238,5 +251,7 @@ func (app *App) turnOff() {
 		module.Module.Off()
 	}
 
-	app.powerPin.Write(rpio.Low)
+	if app.GpioEnabled {
+		app.powerPin.Write(rpio.Low)
+	}
 }

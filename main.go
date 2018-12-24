@@ -17,6 +17,7 @@ import (
 	"github.com/matematik7/jaslice-go/nebo"
 	"github.com/matematik7/jaslice-go/pwm"
 	"github.com/matematik7/jaslice-go/relay"
+	"github.com/matematik7/jaslice-go/triac"
 	"github.com/matematik7/jaslice-go/utrinek"
 )
 
@@ -40,6 +41,7 @@ func main() {
 	app.AddModule("luna", luna.New)
 	app.AddModule("button", button.New)
 	app.AddModule("alexa", alexa.New)
+	app.AddModule("triac", triac.New)
 
 	app.Initialize("config.json")
 

@@ -3,6 +3,7 @@ package luna
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -37,14 +38,20 @@ func (luna *Luna) getPhase() byte {
 	}
 	defer resp.Body.Close()
 
-	decoder := json.NewDecoder(resp.Body)
-	if err = decoder.Decode(response); err != nil {
-		log.Println("Error decoding moon phase:", err)
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("Error reading moon response: %v", err)
+		return 1
+	}
+
+	err = json.Unmarshal(data, response)
+	if err != nil {
+		log.Printf("Error decoding moon json from \"%v\": %v", string(data), err)
 		return 1
 	}
 
 	if !response.Success || len(response.Response) == 0 {
-		log.Println("Invalid response:", response)
+		log.Printf("Invalid moon phase response in \"%v\": %+v", string(data), response)
 		return 1
 	}
 
