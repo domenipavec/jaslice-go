@@ -14,16 +14,11 @@ type Luna struct {
 	app *application.App
 
 	mode byte
-
-	clientId     string
-	clientSecret string
 }
 
 func New(app *application.App, config application.Config) application.Module {
 	return &Luna{
-		app:          app,
-		clientId:     config.GetString("clientId"),
-		clientSecret: config.GetString("clientSecret"),
+		app: app,
 	}
 }
 

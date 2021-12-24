@@ -114,10 +114,7 @@
 	{
 		"module": "luna",
 		"name": "Luna",
-		"config": {
-			"clientId": "CLIENTID",
-			"clientSecret": "CLIENTSECRET"
-		}
+		"config": {}
 	},
 	{
 		"module": "button",

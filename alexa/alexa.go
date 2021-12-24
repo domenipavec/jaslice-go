@@ -8,8 +8,8 @@ import (
 	"net"
 	"net/http"
 
-	"github.com/fromkeith/gossdp"
 	"github.com/domenipavec/jaslice-go/application"
+	"github.com/fromkeith/gossdp"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -77,6 +77,10 @@ func New(app *application.App, config application.Config) application.Module {
 		if err != nil {
 			log.Println("Error reading body:", err)
 			http.Error(w, "can't read body", http.StatusBadRequest)
+		}
+
+		if !bytes.Contains(body, []byte("SetBinaryState")) {
+			return
 		}
 
 		action := ""
