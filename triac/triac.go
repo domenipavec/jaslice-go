@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/matematik7/jaslice-go/application"
+	"github.com/domenipavec/jaslice-go/application"
 )
 
 const address = 0x53

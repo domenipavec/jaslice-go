@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/matematik7/jaslice-go/application"
+	"github.com/domenipavec/jaslice-go/application"
 	"github.com/stianeikeland/go-rpio"
 )
 

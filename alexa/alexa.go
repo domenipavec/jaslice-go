@@ -9,7 +9,7 @@ import (
 	"net/http"
 
 	"github.com/fromkeith/gossdp"
-	"github.com/matematik7/jaslice-go/application"
+	"github.com/domenipavec/jaslice-go/application"
 	uuid "github.com/satori/go.uuid"
 )
 

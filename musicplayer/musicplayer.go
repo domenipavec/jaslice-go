@@ -11,7 +11,7 @@ import (
 
 	"golang.org/x/net/websocket"
 
-	"github.com/matematik7/jaslice-go/application"
+	"github.com/domenipavec/jaslice-go/application"
 )
 
 // numid check with amixer controls
